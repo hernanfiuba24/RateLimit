@@ -13,6 +13,7 @@ import com.rateLimit.service.notificationRule.StatusNotificationChecker;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * NotificationSender process a {@link List} of {@link Notification}s, it sends notification if the recipient is available to be notify.
@@ -27,18 +28,17 @@ public class NotificationSender {
         this.notificationCheckers.put(NotificationType.NEWS, new NewsNotificationChecker(newCache(TimeUnit.DAYS)));
     }
 
-    public void send(List<Notification> notifications) {
-        notifications.stream()
-                .filter(notification -> {
+    public List<Notification> send(List<Notification> notifications) {
+        return notifications.stream()
+                .map(notification -> {
                     NotificationType notificationType = NotificationType.of(notification.getType());
                     if (notificationType != null && this.notificationCheckers.get(notificationType).checkNotification(notification.getRecipient())) {
-                        return true;
+                        send(notification);
                     } else {
                         notification.setStatus(Status.FAILED);
-                        return false;
                     }
-                })
-                .map(it -> send(it));
+                    return notification;
+                }).collect(Collectors.toList());
     }
 
     private Notification send(Notification notification) {

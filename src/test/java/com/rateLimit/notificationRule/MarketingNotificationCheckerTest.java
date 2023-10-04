@@ -1,4 +1,4 @@
-package com.rateLimit;
+package com.rateLimit.notificationRule;
 
 import com.google.common.cache.Cache;
 import com.rateLimit.service.notificationRule.MarketingNotificationChecker;
