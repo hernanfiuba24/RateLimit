@@ -1,15 +1,14 @@
 package com.rateLimit.service.notificationRule;
 
+import com.google.common.cache.Cache;
 import com.rateLimit.domain.NotificationType;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Marketing notification checks if a recipient {@param <String>} does not receive three notifications per hour.
  */
 public class MarketingNotificationChecker extends NotificationChecker {
 
-    public MarketingNotificationChecker() {
-        super(3, NotificationType.MARKETING, TimeUnit.HOURS);
+    public MarketingNotificationChecker(Cache<String, Integer> loader) {
+        super(3, NotificationType.MARKETING, loader);
     }
 }

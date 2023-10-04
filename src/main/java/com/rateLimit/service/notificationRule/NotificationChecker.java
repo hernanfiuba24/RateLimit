@@ -2,14 +2,13 @@ package com.rateLimit.service.notificationRule;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.rateLimit.domain.NotificationType;
 
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Notification Checker, abstract class that checks if a recipient is available to be notify.
+ * It depends on the loader configuration.
  */
 public abstract class NotificationChecker {
 
@@ -17,12 +16,10 @@ public abstract class NotificationChecker {
     protected NotificationType type;
     protected Cache<String, Integer> loader;
 
-    public NotificationChecker(Integer maxNotifications, NotificationType type, TimeUnit timeUnit) {
+    public NotificationChecker(Integer maxNotifications, NotificationType type, Cache<String, Integer> loader) {
         this.maxNotifications = maxNotifications;
         this.type = type;
-        this.loader = CacheBuilder.newBuilder()
-                .expireAfterWrite(1, timeUnit)
-                .build();
+        this.loader = loader;
     }
 
     public Boolean checkNotification(String recipient) {
